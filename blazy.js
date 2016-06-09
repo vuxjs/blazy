@@ -92,6 +92,12 @@
             unbindEvent(window, 'scroll', util.validateT);
             unbindEvent(window, 'resize', util.validateT);
             unbindEvent(window, 'resize', util.saveViewportOffsetT);
+
+            // destroy handler for scroller
+            if (self.scroller) {
+                self.scroller._xscroll && self.scroller._xscroll.off("scroll scrollend afterrender", util.validateT, self.scroller._xscroll);
+            }
+
             util.count = 0;
             util.elements.length = 0;
             util.destroyed = true;
@@ -140,6 +146,14 @@
             bindEvent(window, 'resize', util.saveViewportOffsetT);
             bindEvent(window, 'resize', util.validateT);
             bindEvent(window, 'scroll', util.validateT);
+
+            // scroll handler for scroller
+            if (self.options.scroller) {
+                const scroller = self.options.scroller._xscroll
+                var eventType = scroller.userConfig.useOriginScroll ? "scroll" : "scrollend";
+                scroller.on("afterrender", util.validateT, self);
+                scroller.on(eventType, util.validateT, self);
+            }
         }
         // And finally, we start to lazy load.
         validate(self);
@@ -200,6 +214,9 @@
                                 each(parent.getElementsByTagName('source'), function(source) {
                                     handleSource(source, _attrSrcset, options.srcset);
                                 });
+                            }
+                            if (options.scroller) {
+                                options.scroller.reset()
                             }
                         // or background-image
                         } else {

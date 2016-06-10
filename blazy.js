@@ -149,7 +149,7 @@
 
             // scroll handler for scroller
             if (self.options.scroller) {
-                const scroller = self.options.scroller._xscroll
+                var scroller = self.options.scroller._xscroll
                 var eventType = scroller.userConfig.useOriginScroll ? "scroll" : "scrollend";
                 scroller.on("afterrender", util.validateT, self);
                 scroller.on(eventType, util.validateT, self);
